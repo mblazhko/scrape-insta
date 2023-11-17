@@ -1,4 +1,6 @@
 import os
+import time
+
 from instagrapi import Client
 from dotenv import load_dotenv
 
@@ -36,11 +38,13 @@ def scrape_hashtag_data(client, username, password, amount) -> list:
 
 if __name__ == "__main__":
     cl = Client()
+    start = time.time()
     data = scrape_hashtag_data(
         client=cl,
         username=USERNAME,
         password=PASSWORD,
         amount=int(input("Enter amount of posts you want to get data for: "))
     )
-    for item in data:
-        print(item)
+    end = time.time() - start
+    print(f"End of all {end}")
+    print(data)
