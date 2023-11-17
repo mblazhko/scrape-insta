@@ -13,7 +13,7 @@ USERNAME = os.getenv("USERNAME_INST")
 PASSWORD = os.getenv("PASSWORD")
 
 
-def scrape_hashtag_data(client, username, password) -> list:
+def scrape_hashtag_data(client, username, password, amount) -> list:
     try:
         session = get_session(client, f"session_{username}.json")
         if session:
@@ -28,7 +28,7 @@ def scrape_hashtag_data(client, username, password) -> list:
         session=session, cl=client, username=username, password=password
     )
     hashtag_info = get_hashtag_info_with_provided_amount(
-        cl=logged_in_user, tag_name="business", amount=10
+        cl=logged_in_user, tag_name="business", amount=amount
     )
 
     return hashtag_info
@@ -36,6 +36,11 @@ def scrape_hashtag_data(client, username, password) -> list:
 
 if __name__ == "__main__":
     cl = Client()
-    data = scrape_hashtag_data(client=cl, username=USERNAME, password=PASSWORD)
+    data = scrape_hashtag_data(
+        client=cl,
+        username=USERNAME,
+        password=PASSWORD,
+        amount=int(input("Enter amount of posts you want to get data for:"))
+    )
     for item in data:
         print(item)
