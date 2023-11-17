@@ -28,7 +28,7 @@ def scrape_hashtag_data(client, username, password, amount) -> list:
         session=session, cl=client, username=username, password=password
     )
     hashtag_info = get_hashtag_info_with_provided_amount(
-        cl=logged_in_user, tag_name="business", amount=amount
+        cl=logged_in_user, tag_name=input("Enter hashtag: "), amount=amount
     )
 
     return hashtag_info
@@ -40,7 +40,7 @@ if __name__ == "__main__":
         client=cl,
         username=USERNAME,
         password=PASSWORD,
-        amount=int(input("Enter amount of posts you want to get data for:"))
+        amount=int(input("Enter amount of posts you want to get data for: "))
     )
     for item in data:
         print(item)
