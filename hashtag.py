@@ -10,6 +10,7 @@ def get_hashtag_info_with_provided_amount(
     followers_list = []
 
     for hashtag in hashtags:
+        
         item = hashtag.dict()
         post_id = item["code"]
         user = item["user"]["username"]
