@@ -13,10 +13,8 @@ def get_hashtag_info_with_provided_amount(
         
         item = hashtag.dict()
         post_id = item["code"]
-        user = item["user"]["username"]
-        followers_count = cl.user_info_by_username_v1(user).dict()[
-            "follower_count"
-        ]
+        user = item["user"]["pk"]
+        followers_count = cl.user_followers(user)
         output = {
             "post_id": post_id,
             "username": user,
