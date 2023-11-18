@@ -1,3 +1,4 @@
+import asyncio
 import os
 import time
 
@@ -6,7 +7,7 @@ from dotenv import load_dotenv
 
 from login_user import login_user
 from hashtag import get_hashtag_info_with_provided_amount
-from make_session import make_session, get_session
+from make_session import get_or_create_new_session
 
 load_dotenv()
 
@@ -15,22 +16,16 @@ USERNAME = os.getenv("USERNAME_INST")
 PASSWORD = os.getenv("PASSWORD")
 
 
-def scrape_hashtag_data(client, username, password, amount) -> list:
-    try:
-        session = get_session(client, f"session_{username}.json")
-        if session:
-            print(f"Session for {username} was found")
-    except FileNotFoundError:
-        print(f"Session for {username} not found, making new session...")
-        make_session(cl=client, username=username, password=password)
-        session = get_session(client, f"session_{username}.json")
-        print(f"Session for {username} created")
+def scrape_hashtag_data(client, username, password) -> list:
+    session = get_or_create_new_session(client, username, password)
 
     logged_in_user = login_user(
         session=session, cl=client, username=username, password=password
     )
     hashtag_info = get_hashtag_info_with_provided_amount(
-        cl=logged_in_user, tag_name=input("Enter hashtag: "), amount=amount
+        cl=logged_in_user,
+        tag_name=input("Enter hashtag: "),
+        amount=int(input("Enter amount of posts you want to get data for: "))
     )
 
     return hashtag_info
@@ -43,8 +38,6 @@ if __name__ == "__main__":
         client=cl,
         username=USERNAME,
         password=PASSWORD,
-        amount=int(input("Enter amount of posts you want to get data for: "))
     )
     end = time.time() - start
-    print(f"End of all {end}")
-    print(data)
+    print(f"End time is {end}")
