@@ -1,30 +1,32 @@
-import time
-
-from instagrapi import Client
+from instagram_user import InstagramUser
 
 
-def count_user_followers(cl: Client, user_id) -> int:
-    return cl.user_info(user_id).dict()["follower_count"]
+class Hashtag:
+    def __init__(self, user: InstagramUser) -> None:
+        self.user = user
 
+    def get_hashtag_info_with_provided_amount(
+        self, tag_name: str, amount: int
+    ) -> list[dict[str, int]]:
+        post_list = self.user.cl.hashtag_medias_top_v1(
+            name=tag_name, amount=amount
+        )
 
-def get_hashtag_info_with_provided_amount(
-    cl: Client, tag_name: str, amount: int
-) -> list[dict[str, int]]:
-    cl.delay_range = [0.15, 0.2]
-    hashtags = cl.hashtag_medias_top_v1(name=tag_name, amount=amount)
+        return self.get_post_data(post_list)
 
-    followers_list = []
-    for hashtag in hashtags:
-        item = hashtag.dict()
-        post_id = item["code"]
-        user_id = item["user"]["pk"]
-        followers_count = count_user_followers(cl, user_id)
-        output = {
-            "post_id": post_id,
-            "user_id": user_id,
-            "follower_count": followers_count,
-        }
-        print(output)
-        followers_list.append(output)
+    def get_post_data(self, post_list) -> list[dict[str, int]]:
+        post_user_list = []
+        for post in post_list:
+            item = post.dict()
+            post_id = item["code"]
+            user_id = item["user"]["pk"]
+            output = {
+                "post_id": post_id,
+                "user_id": user_id,
+            }
+            post_user_list.append(output)
 
-    return followers_list
+        return post_user_list
+
+    def count_user_followers(self, user_id: int) -> int:
+        return self.user.cl.user_info(user_id).dict()["follower_count"]
