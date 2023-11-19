@@ -26,7 +26,7 @@ class InstagramUser:
         # check if the session is valid
         try:
             self.cl.get_timeline_feed()
-        except LoginRequired:
+        except (LoginRequired, PleaseWaitFewMinutes):
             print(
                 "Session is invalid, need to login via username and password"
             )
@@ -38,6 +38,8 @@ class InstagramUser:
             self.cl.set_uuids(old_session["uuids"])
 
             self.cl.login(self.username, self.password)
+            self.delete_expired_session()
+            self.make_session()
 
     def get_or_create_new_session(self) -> dict:
         try:
