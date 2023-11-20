@@ -11,9 +11,16 @@ class InstagramUser:
         self.username = username
         self.password = password
         self.cl = Client()
-        self.cl.delay_range = [0.15, 0.2]
+        self.cl._delay_range = [0.15, 0.2]
         self.session_file_name = f"session_{self.username}.json"
         self.session = self.get_or_create_new_session()
+
+    def set_client_delay_range(
+            self,
+            min_value: int | float,
+            max_value: int | float
+    ) -> None:
+        self.cl._delay_range = [min_value, max_value]
 
     def login_user(self) -> None:
         """
